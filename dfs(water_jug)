@@ -1,0 +1,54 @@
+class State: 
+ def __init__(self, jug1, jug2): 
+    self.jug1 = jug1  
+    self.jug2 = jug2  
+ def __eq__(self, other): 
+ 
+    return self.jug1 == other.jug1 and self.jug2 == other.jug2 
+ def __hash__(self): 
+
+    return hash((self.jug1, self.jug2)) 
+ 
+def dfs(start, target, visited): 
+
+ if start == target:
+    return [start] 
+ visited.add(start) 
+ for next_state in get_successors(start):
+    if next_state not in visited:
+        path = dfs(next_state, target, visited) 
+        if path: 
+            return [start] + path 
+        return None 
+def get_successors(state): 
+ 
+ successors = [] 
+ successors.append(State(jug1=3, jug2=state.jug2)) 
+ 
+ successors.append(State(jug1=state.jug1, jug2=4)) 
+ 
+ successors.append(State(jug1=0, jug2=state.jug2)) 
+ 
+ successors.append(State(jug1=state.jug1, jug2=0)) 
+  
+ pour_amount = min(state.jug1, 4 - state.jug2) 
+ successors.append(State(jug1=state.jug1 - pour_amount, jug2=state.jug2 +pour_amount)) 
+ 
+ pour_amount = min(3 - state.jug1, state.jug2) 
+ successors.append(State(jug1=state.jug1 + pour_amount, jug2=state.jug2 - pour_amount)) 
+ return successors 
+def print_solution(path): 
+ print("Solution:") 
+ for i, state in enumerate(path): 
+    print(f"Step {i}: Jug1={state.jug1}, Jug2={state.jug2}") 
+def main(): 
+ start_state = State(jug1=0, jug2=0) # Initial state of the jugs 
+ target_state = State(jug1=2, jug2=0) # Target state we want to achieve 
+ visited = set() # Set to store visited states 
+ path = dfs(start_state, target_state, visited) # Find solution using DFS 
+ if path: # If solution path is found 
+    print_solution(path) # Print the solution path 
+ else: # If no solution path is found 
+    print("No solution found.") 
+if __name__ == "__main__": 
+ main() 
